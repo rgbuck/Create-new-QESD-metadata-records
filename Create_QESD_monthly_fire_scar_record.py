@@ -3,7 +3,27 @@ import urllib2
 import urllib
 import json
 import pprint
+#Get arguments for Year and Month from the user
+def getCmdargs():
+    """
+    Get commandline arguments.
+    """
+    p = argparse.ArgumentParser()
+    p.add_argument(
+        "--Year",
+        help="Enter year fire scar mapping eg. 2022")
+    p.add_argument(
+        "--Month",
+        help="Enter month fire scar mapping eg. October")
+    p.add_argument(
+        '--debug', default=False, action="store_true",
+        help="Do not remove tmp files after")
+    cmdargs = p.parse_args()
+    return cmdargs
 
+if __name__ == "__main__":
+    cmdargs = getCmdargs()
+    main(cmdargs.Year, cmdargs.Month, cmdargs.debug)
 # Put the details of the template dataset into a dict. 
 # Essentially the month and year will be changed to reflect the current dataset to be created.
 # Modify script to read this infomation from an input file.
