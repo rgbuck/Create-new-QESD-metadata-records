@@ -1,37 +1,16 @@
 #!/usr/bin/env python
-import urllib2
-import urllib
-import json
-import pprint
-#Get arguments for Year and Month from the user
-def getCmdargs():
-    """
-    Get commandline arguments.
-    """
-    p = argparse.ArgumentParser()
-    p.add_argument(
-        "--Year",
-        help="Enter year fire scar mapping eg. 2022")
-    p.add_argument(
-        "--Month",
-        help="Enter month fire scar mapping eg. October")
-    p.add_argument(
-        '--debug', default=False, action="store_true",
-        help="Do not remove tmp files after")
-    cmdargs = p.parse_args()
-    return cmdargs
+#import packages for Python 3
+import requests
+import argparse
 
-if __name__ == "__main__":
-    cmdargs = getCmdargs()
-    main(cmdargs.Year, cmdargs.Month, cmdargs.debug)
-# Put the details of the template dataset into a dict. 
-# Essentially the month and year will be changed to reflect the current dataset to be created.
-# Modify script to read this infomation from an input file.
-template_dict = {
-    "acknowledgements": "",
+# Put the details of the template xml file into a dictionary. 
+# From the input arguments the month and year will be changed to reflect the current dataset to be created.
+# Maybe down the track, modify this script to read template dictionary from an input file.
+templateDict = {
+        "acknowledgements": "",
         "additional_info": "[\"Fire scars were automatically detected in Sentinel-2 imagery using differenced bare soil fraction values obtained using the Joint Remote Sensing Research Program’s (JRSRP) fractional cover model. A Sentinel-2 pixel is identified as likely burnt if there has been a significant increment in bare soil fraction relative to the previous fractional cover values. Once areas of likely change are detected, a region growing algorithm is applied to expand the area to capture the whole fire event. Areas are then filtered into burnt and unburnt classes using a decision tree analysis. Subsequent manual interpretation is used to delineate between false positives and true positives.\\nCompleteness (omission):\\n\\nThe Sentinel-2 fire scars product has been validated using 480,000 independent observations selected from a range of environments and periods within the fire season across Queensland. The validation result showed that a high proportion of burned area was correctly classified (f1score = 0.91) with commission and omission error of 13% and 8% respectively. The omission error does not include burned area missed because of missing data (e.g. long periods without cloud-free images) due to the lack of an independent validation data set.\\n\\nThe manual editing applied to the 2020 fire scar product should significantly reduce the number of missed fires, although this has not been quantified.\\nConsistency (conceptual):\\n\\nSentinel-2 analysis does not provide a complete record of fire history for this period. Fire scars may be missed or under-mapped due to:\\n- Lack of visibility due to cloud, haze and smoke, and cloud shadow;\\n- Misclassification as non-fire related change or cloud shadow;\\n- Lack of detection due to size or patchiness. Fire scars smaller than 2 ha may not be included;\\n- Lack of detection due to rapid regrowth of vegetation. This is particularly an issue when there have been multiple cloud-affected images in the time series;\\n- Lack of detection for cool grass/understorey fires, obscured by unburnt vegetation;\\n- Lack of detection in the nominated month due to satellite images downloaded to RSC's imagery storage later than expected;\\n\\nFalse burned areas or over-mapping may result from:\\n- Omission errors in the cloud/shadow masks, where cloud is classified as fire scar;\\n- Areas of high intensity land-use change where the extent of bare ground increases rapidly (e.g cropping, vegetation clearing);\\n- Areas of inundation (e.g tidal flats, wetlands, ephemeral lakes and channels).\\nPositional accuracy (external, absolute):\\n\\nAll the data described here has been generated from the analysis of Sentinel-2 data acquired as orthorectified images from the European Space Agency. Sentinel-2 imagery has band-dependent spatial resolutions of 10m and 20m. In-house analysis of Sentinel-2 image-to-image registration showed that in over 90% of image pairs, the geometric error was less than 10m.\\nAttribute accuracy (non quantitative):\\n\\nFire scars may persist and continue to be visible for several months in the image time sequence. Where there has been fire scar persistence for a given pixel within the compositing period, the earliest date of detection is recorded.\"]",
-        "author": null,
-        "author_email": null,
+        "author": None,
+        "author_email": None,
         "cited_in": "",
         "classification": "[\"https://linked.data.gov.au/def/resource-types/Dataset\"]",
         "classification_and_access_restrictions": "[\"https://linked.data.gov.au/def/qg-security-classifications/official-public\"]",
@@ -44,7 +23,7 @@ template_dict = {
         "dataset_language": "[\"https://linked.data.gov.au/def/iso639-1/en\"]",
         "dataset_release_date": "2022-11-21T00:00:00",
         "identifiers": "",
-        "isopen": false,
+        "isopen": False,
         "landing_page": "https://qldspatial.information.qld.gov.au/catalogue/custom/detail.page?fid={BBF9AFE0-3858-4241-9C09-B1D0F39CFB6E}",
         "license_id": "https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0",
         "license_title": "https://linked.data.gov.au/def/qld-data-licenses/cc-by-4.0",
@@ -53,8 +32,8 @@ template_dict = {
         "lineage_plan": "",
         "lineage_responsible_party": "[\"Deanna Vandenberg - Principal Scientist (Remote Sensing)\"]",
         "lineage_sensor": "[\"https://sentinel.esa.int/web/sentinel/missions/sentinel-2\"]",
-        "maintainer": null,
-        "maintainer_email": null,
+        "maintainer": None,
+        "maintainer_email": None,
         "metadata_contact_point": "71590218",
         "metadata_created": "",
         "metadata_modified": "",
@@ -71,12 +50,12 @@ template_dict = {
             "description": "",
             "image_url": "2021-07-01-005831.096785topic-5.png",
             "created": "2021-06-03T00:07:31.677442",
-            "is_organization": true,
+            "is_organization": True,
             "approval_status": "approved",
             "state": "active"
         },
         "owner_org": "b71e4ecf-0a66-4e27-b8d8-b99b681291a4",
-        "private": false,
+        "private": False,
         "publication_status": "http://def.isotc211.org/iso19115/-1/2014/IdentificationInformation/code/MD_ProgressCode/completed",
         "purpose": "This state-wide composite of fire scars (burnt areas) is to provide regular monitoring and mapping of fire scars across Queensland, useful for managing natural resources, assessing fire hazard and risk, understanding the impacts of fire on grazing production and monitoring ecological impacts over time.",
         "rights_statement": "© State of Queensland (Department of Environment and Science) YYYY",
@@ -118,16 +97,16 @@ template_dict = {
         "spatial_upper_right": "{\"type\":\"Point\",\"coordinates\":[153.91142614303268,-10.676967563393484]}",
         "specialized_license": "",
         "state": "active",
-        "temporal_end": "YYYY-MM-31",
+        "temporal_end": "YYYY-mmmm-31",
         "temporal_precision_spacing": "P1M",
         "temporal_resolution_range": "https://gcmd.earthdata.nasa.gov/kms/concept/7b2a303c-3cb7-4961-9851-650548964674",
-        "temporal_start": "YYYY-MM-01",
+        "temporal_start": "YYYY-mmmm-01",
         "title": "Sentinel-2 Queensland Fire Scars MMMM YYYY",
         "topic": "[\"https://gcmd.earthdata.nasa.gov/kms/concept/e6f1ee58-fb71-42dd-b071-c1637da7e51f\",\"https://gcmd.earthdata.nasa.gov/kms/concept/c9ba3275-2fe3-4619-b7c0-881d4f6fa34e\"]",
         "type": "dataset",
         "update_schedule": "http://def.isotc211.org/iso19115/-1/2014/MaintenanceInformation/code/MD_MaintenanceFrequencyCode/asNeeded",
         "url": "",
-        "version": null,
+        "version": None,
         "relationships_as_subject": [
             {
                 "__extras": {
@@ -142,23 +121,23 @@ template_dict = {
             {
                 "additional_info": "",
                 "additional_info[0][]": "",
-                "cache_last_updated": null,
-                "cache_url": null,
+                "cache_last_updated": None,
+                "cache_url": None,
                 "compression": "http://publications.europa.eu/resource/authority/file-type/ZIP",
                 "data_services[0][]": "",
                 "description": "Fire scar mapping derived from Sentinel-2 imagery.",
                 "format": "http://publications.europa.eu/resource/authority/file-type/TIFF",
                 "hash": "",
                 "id": "",
-                "last_modified": null,
+                "last_modified": None,
                 "license": "http://linked.data.gov.au/def/licence-document/cc-by-4.0",
-                "mimetype": null,
-                "mimetype_inner": null,
-                "name": "Fire Scar (Burnt Area) Mapping, MONTH YYYY",
+                "mimetype": None,
+                "mimetype_inner": None,
+                "name": "Fire Scar (Burnt Area) Mapping, MMMM YYYY",
                 "package_id": "",
                 "packaging": "http://publications.europa.eu/resource/authority/file-type/ZIP",
                 "position": 0,
-                "resource_type": null,
+                "resource_type": None,
                 "rights_statement": "© State of Queensland (Department of Environment and Science) 2022",
                 "schema_standards": "",
                 "schema_standards[0][]": "",
@@ -168,7 +147,7 @@ template_dict = {
                 "state": "active",
                 "token": "cbe49650e1a56f62510d79be7cc07b93b09a766f9dedd383ccf3ef1bd0afd18e",
 				"url": "https://qldspatial.information.qld.gov.au/catalogue/custom/detail.page?fid={to be updated}",
-                "url_type": null
+                "url_type": None
             }
         ],
         "tags": [
@@ -177,48 +156,136 @@ template_dict = {
                 "id": "1caf3692-3ff2-4cd4-a1ac-e7dabc217c4c",
                 "name": "burnt area",
                 "state": "active",
-                "vocabulary_id": null
+                "vocabulary_id": None
             },
             {
                 "display_name": "fire extent",
                 "id": "f45b9b09-d10e-4143-82d6-6478cd645bbd",
                 "name": "fire extent",
                 "state": "active",
-                "vocabulary_id": null
+                "vocabulary_id": None
             },
             {
                 "display_name": "wildfire",
                 "id": "f0701090-7264-4149-91f9-98c73a70bd02",
                 "name": "wildfire",
                 "state": "active",
-                "vocabulary_id": null
+                "vocabulary_id": None
             }
         ],
         "groups": [],
         "relationships_as_object": []
 }
+#Get arguments for Year and Month from the user
+def getCmdargs():
+    """
+    Get commandline arguments.
+    """
+    p = argparse.ArgumentParser()
+    p.add_argument("-y", "--Year",
+        help="Enter year fire scar mapping eg. 2022")
+    p.add_argument("-m", "--Month",
+        help="Enter month fire scar mapping eg. October")
+    p.add_argument(
+        "--debug", required=False, default=False, action="store_true",
+        help="Do not remove tmp files after")
+    cmdargs = p.parse_args()
+    return cmdargs
 
-# Update the string 'data_string' so that it has the relevant month and year inserted
-# Input month and year as variable, update MMMMM and YYYY from these variables. 
+def switch(month):
+    try:
+        return {
+            "January": "01",
+            "February": "02",
+            "March": "03",
+            "April": "04",
+            "May": "05",
+            "June": "06",
+            "July": "07",
+            "August": "08",
+            "September": "09",
+            "October": "10",
+            "November": "11",
+            "December": "12",
+        }[month]
+    except:
+        return 0
 
-# Use the json module to dump the dictionary to a string for posting.
-data_string = urllib.quote(json.dumps(template_dict))
 
-# Setup the package_create function to create a new dataset.
-request = urllib2.Request(
-    'http://qesdtst.des.qld.gov.au/api/action/package_create')
+def update_dictionary(targetDict, data, depth):
 
-# Include the authorization header for the user account on the CKAN site
-request.add_header('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJXdkd6dEIxYlFtS0MzV3FiZEdfZEZUOHFfNF8yam1BMGg1bktjNndURDk0Mk5GRzhMYmVBS1ozelczbW9YTmp4a2g1SkxPVmUtVHR4dU1xOSIsImlhdCI6MTY1ODM4MDM5Nn0.xdK7U8Ftiz3L4g-BoPJPnt8tSgZsjpqWUHKJqEL_0pM')
+    keys = []
+    found = False
+    
+    for key in targetDict:
+        
+        entry = targetDict[key]
 
-# Make the HTTP request.
-response = urllib2.urlopen(request, data_string)
-assert response.code == 200
+        if isinstance(entry, str):
+            
+            if entry.find("YYYY") > -1:
+                print("found YYYY at depth: ", str(depth))
+                entry = entry.replace("YYYY", data[0])
+                found = True
+     
+            if entry.find("MMMM") > -1:
+                print("found MMMM at depth: ", str(depth))
+                entry = entry.replace("MMMM", data[1])
+                found = True
+                
+            if entry.find("mmmm") > -1:
+                print("found mmmm at depth: ", str(depth))
+                entry = entry.replace("mmmm", data[2])
+                found = True
 
-# Use the json module to load CKAN's response into a dictionary.
-response_dict = json.loads(response.read())
-assert response_dict['success'] is True
+            if found:
+                #print(entry)
+                found = False
 
-# package_create returns the created package as its result.
-created_package = response_dict['result']
-pprint.pprint(created_package)
+        elif isinstance(entry, dict):
+            update_dictionary(entry, data, depth + 1)
+
+        elif isinstance(entry, list):
+            for i in entry:
+                if isinstance(i, dict):
+                    update_dictionary(i, data, depth + 1)
+                
+        targetDict[key] = entry
+        
+
+            
+def main(year, month):
+    
+    monthNum = switch(month)
+    data = [year, month, monthNum]
+    update_dictionary(templateDict, data, 0)
+    # Use the json module to dump the dictionary to a string for posting.
+    #data_string = urllib.quote(json.dumps(template_dict))
+
+    # Setup the package_create function to create a new dataset.
+    #request = urllib2.Request('http://qesdtst.des.qld.gov.au/api/action/package_create')
+    request = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
+
+    # Include the authorization header for the user account on the CKAN site
+    headers = {'Authorization':'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJXdkd6dEIxYlFtS0MzV3FiZEdfZEZUOHFfNF8yam1BMGg1bktjNndURDk0Mk5GRzhMYmVBS1ozelczbW9YTmp4a2g1SkxPVmUtVHR4dU1xOSIsImlhdCI6MTY1ODM4MDM5Nn0.xdK7U8Ftiz3L4g-BoPJPnt8tSgZsjpqWUHKJqEL_0pM'}
+
+    # Set up params object
+    params = templateDict
+    
+    #Make the HTTP request.
+    #response = urllib2.urlopen(request, data_string)
+    response = requests.put(request, headers = headers, params = params)
+    # assert response.code == 200
+
+
+    # package_create returns the created package as its result.
+    # created_package = response.json()
+    print(response)
+    
+
+if __name__ == "__main__":
+    cmdargs = getCmdargs()
+    main(cmdargs.Year, cmdargs.Month)
+
+
+
