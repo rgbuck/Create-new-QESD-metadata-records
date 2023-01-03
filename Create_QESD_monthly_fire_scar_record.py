@@ -21,7 +21,7 @@ templateDict = {
         "creator_user_id": "9641ffbb-ae5b-4829-94f6-cb328d1049dd",
         "data_quality_standard": "{\"calculated_quality_measure\":0,\"accessibility\":{\"score\":0,\"accessibility_links_to_data_and_context\":0,\"non_proprietary_format\":0,\"open_license\":0,\"open_standards\":0,\"structured_data\":0},\"accuracy\":{\"score\":0,\"data_assurance\":0,\"data_complete\":0,\"data_met_needs_of_primary_user\":0,\"no_changes_or_flaws_not_explained\":0,\"revised_when_errors_detected\":0},\"coherence\":{\"score\":0,\"consistent_methodology\":0,\"consistent_over_time\":0,\"consistent_with_related_datasets\":0,\"elements_can_be_compared\":0,\"consistent_data_collection_frequency\":0},\"institutional_environment\":{\"score\":0,\"authorized_data_collection\":0,\"custodian\":0,\"data_quality_framework\":0,\"governance_roles\":0,\"no_commercial_interest_or_conflict\":0},\"interpretability\":{\"score\":0,\"accuracy_evaluation\":0,\"concept_explanations\":0,\"data_dictionary_provided\":0,\"data_sources_and_methods\":0,\"technical_explanations\":0}}",
         "dataset_language": "[\"https://linked.data.gov.au/def/iso639-1/en\"]",
-        "dataset_release_date": "2022-11-21T00:00:00",
+        "dataset_release_date": "2022-mmmm-01T00:00:00",
         "identifiers": "",
         "isopen": False,
         "landing_page": "https://qldspatial.information.qld.gov.au/catalogue/custom/detail.page?fid={BBF9AFE0-3858-4241-9C09-B1D0F39CFB6E}",
@@ -274,7 +274,7 @@ def main(year, month):
     
     #Make the HTTP request.
     #response = urllib2.urlopen(request, data_string)
-    response = requests.put(request, headers = headers, params = params)
+    response = requests.post(request, headers = headers, params = params)
     # assert response.code == 200
 
 
