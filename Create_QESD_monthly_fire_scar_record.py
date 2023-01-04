@@ -268,14 +268,14 @@ def main(year, month):
     API_ENDPOINT = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
 
     # Include the authorization key for the user account on the CKAN site
-    API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJXdkd6dEIxYlFtS0MzV3FiZEdfZEZUOHFfNF8yam1BMGg1bktjNndURDk0Mk5GRzhMYmVBS1ozelczbW9YTmp4a2g1SkxPVmUtVHR4dU1xOSIsImlhdCI6MTY1ODM4MDM5Nn0.xdK7U8Ftiz3L4g-BoPJPnt8tSgZsjpqWUHKJqEL_0pM'
+    API_KEY = 'xxxx'
 
     # Convert template dictionary to a string using json module, although the data function should be able to do the conversion
     # params = json.dumps(templateDict)
     
     #Make the HTTP request.
     #response = urllib2.urlopen(request, data_string)
-    response = requests.post(url = API_ENDPOINT, headers = {'Authorization' : 'TOK:<API_KEY>'}, data = templateDict)
+    response = requests.post(url = API_ENDPOINT, headers = {'Authorization' : API_KEY}, data = templateDict)
     print(response.text)
     
 
