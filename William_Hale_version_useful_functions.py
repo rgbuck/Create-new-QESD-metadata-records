@@ -215,7 +215,7 @@ def switch(month):
 
 def update_dictionary(targetDict, data, depth):
 
-    keys = []
+    key = []
     found = False
     
     for key in targetDict:

@@ -2,6 +2,7 @@
 #import packages for Python 3
 import requests
 import argparse
+import json
 
 # Put the details of the template xml file into a dictionary. 
 # From the input arguments the month and year will be changed to reflect the current dataset to be created.
@@ -214,7 +215,7 @@ def switch(month):
 
 def update_dictionary(targetDict, data, depth):
 
-    keys = []
+    key = []
     found = False
     
     for key in targetDict:
@@ -264,23 +265,18 @@ def main(year, month):
 
     # Setup the package_create function to create a new dataset.
     #request = urllib2.Request('http://qesdtst.des.qld.gov.au/api/action/package_create')
-    request = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
+    API_ENDPOINT = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
 
-    # Include the authorization header for the user account on the CKAN site
-    headers = {'Authorization':'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJXdkd6dEIxYlFtS0MzV3FiZEdfZEZUOHFfNF8yam1BMGg1bktjNndURDk0Mk5GRzhMYmVBS1ozelczbW9YTmp4a2g1SkxPVmUtVHR4dU1xOSIsImlhdCI6MTY1ODM4MDM5Nn0.xdK7U8Ftiz3L4g-BoPJPnt8tSgZsjpqWUHKJqEL_0pM'}
+    # Include the authorization key for the user account on the CKAN site
+    API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJXdkd6dEIxYlFtS0MzV3FiZEdfZEZUOHFfNF8yam1BMGg1bktjNndURDk0Mk5GRzhMYmVBS1ozelczbW9YTmp4a2g1SkxPVmUtVHR4dU1xOSIsImlhdCI6MTY1ODM4MDM5Nn0.xdK7U8Ftiz3L4g-BoPJPnt8tSgZsjpqWUHKJqEL_0pM'
 
-    # Set up params object
-    params = templateDict
+    # Convert template dictionary to a string using json module, although the data function should be able to do the conversion
+    # params = json.dumps(templateDict)
     
     #Make the HTTP request.
     #response = urllib2.urlopen(request, data_string)
-    response = requests.post(request, headers = headers, params = params)
-    # assert response.code == 200
-
-
-    # package_create returns the created package as its result.
-    # created_package = response.json()
-    print(response)
+    response = requests.post(url = API_ENDPOINT, headers = {'Authorization' : 'TOK:<API_KEY>'}, data = templateDict)
+    print(response.text)
     
 
 if __name__ == "__main__":
