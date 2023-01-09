@@ -266,6 +266,7 @@ def main(year, month):
 
     # Setup the package_create function to create a new dataset
     API_ENDPOINT = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
+    API_PSHOW = ('http://qesdtst.des.qld.gov.au/api/action/package_show?id=2dc20891-e005-413e-befe-eed9cff84880')
 
     # Get the environment variable from the file .env 
     QESD_test_token = os.environ.get("QESD_test_token")
@@ -274,6 +275,8 @@ def main(year, month):
     request_header = {'Authorization' : QESD_test_token}
     
     #Make the HTTP request.
+    response = requests.get(url = API_PSHOW, headers = request_header)
+    print(response.text)
     response = requests.post(url = API_ENDPOINT, headers = request_header)
     print(response.text)
     
