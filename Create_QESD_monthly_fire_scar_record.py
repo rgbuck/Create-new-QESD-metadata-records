@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #import packages for Python 3
+from dotenv import load_dotenv
+import os
 import requests
 import argparse
-import json
 
 # Put the details of the template xml file into a dictionary. 
 # From the input arguments the month and year will be changed to reflect the current dataset to be created.
@@ -260,22 +261,21 @@ def main(year, month):
     monthNum = switch(month)
     data = [year, month, monthNum]
     update_dictionary(templateDict, data, 0)
-    # Use the json module to dump the dictionary to a string for posting.
-    #data_string = urllib.quote(json.dumps(template_dict))
+    # Load the .env file into the environment
+    load_dotenv()
 
-    # Setup the package_create function to create a new dataset.
-    #request = urllib2.Request('http://qesdtst.des.qld.gov.au/api/action/package_create')
+    # Setup the package_create function to create a new dataset
     API_ENDPOINT = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
 
-    # Include the authorization key for the user account on the CKAN site
-    API_KEY = 'xxxx'
+    # Get the environment variable from the file .env 
+    QESD_test_token = os.environ.get("QESD_test_token")
+    print(QESD_test_token)
 
-    # Convert template dictionary to a string using json module, although the data function should be able to do the conversion
-    # params = json.dumps(templateDict)
+    # Set up the header information to be used in authorization key for the user account on the CKAN site
+    request_header = {'Authorization' : QESD_test_token}
     
     #Make the HTTP request.
-    #response = urllib2.urlopen(request, data_string)
-    response = requests.post(url = API_ENDPOINT, headers = {'Authorization' : API_KEY}, data = templateDict)
+    response = requests.post(url = API_ENDPOINT, headers = request_header)
     print(response.text)
     
 
