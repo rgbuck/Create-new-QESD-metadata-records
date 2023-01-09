@@ -269,7 +269,6 @@ def main(year, month):
 
     # Get the environment variable from the file .env 
     QESD_test_token = os.environ.get("QESD_test_token")
-    print(QESD_test_token)
 
     # Set up the header information to be used in authorization key for the user account on the CKAN site
     request_header = {'Authorization' : QESD_test_token}
