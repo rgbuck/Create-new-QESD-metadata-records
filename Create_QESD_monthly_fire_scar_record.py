@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import argparse
+import json
 
 # Put the details of the template xml file into a dictionary. 
 # From the input arguments the month and year will be changed to reflect the current dataset to be created.
@@ -263,9 +264,13 @@ def main(year, month):
     update_dictionary(templateDict, data, 0)
     # Load the .env file into the environment
     load_dotenv()
+    
+    # Convert Python dictionary to JSON
+    metadata_record = json.dumps(templateDict, indent = 4)
+    print(metadata_record)
 
     # Setup the package_create function to create a new dataset
-    API_ENDPOINT = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
+    API_PCREATE = ('http://qesdtst.des.qld.gov.au/api/action/package_create')
     API_PSHOW = ('http://qesdtst.des.qld.gov.au/api/action/package_show?id=2dc20891-e005-413e-befe-eed9cff84880')
 
     # Get the environment variable from the file .env 
@@ -275,9 +280,9 @@ def main(year, month):
     request_header = {'Authorization' : QESD_test_token}
     
     #Make the HTTP request.
-    response = requests.get(url = API_PSHOW, headers = request_header)
-    print(response.text)
-    response = requests.post(url = API_ENDPOINT, headers = request_header)
+    # response = requests.get(url = API_PSHOW, headers = request_header)
+    # print(response.text)
+    response = requests.post(url = API_PCREATE, headers = request_header, params = metadata_record)
     print(response.text)
     
 
