@@ -277,12 +277,12 @@ def main(year, month):
     QESD_test_token = os.environ.get("QESD_test_token")
 
     # Set up the header information to be used in authorization key for the user account on the CKAN site
-    request_header = {'Authorization' : QESD_test_token}
+    request_header = {'Authorization' : QESD_test_token, 'Content-Type' : 'application/json'}
     
     #Make the HTTP request.
     # response = requests.get(url = API_PSHOW, headers = request_header)
     # print(response.text)
-    response = requests.post(url = API_PCREATE, headers = request_header, params = metadata_record)
+    response = requests.post(url = API_PCREATE, headers = request_header, data = metadata_record)
     print(response.text)
     
 
